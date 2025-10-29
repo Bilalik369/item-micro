@@ -132,6 +132,10 @@ const itemSchema = new mongoose.Schema(
   },
 )
 
+itemSchema.methods.incrementViews = function () {
+  this.views += 1
+  return this.save()
+}
 
 const Item = mongoose.model("Item" , itemSchema)
 

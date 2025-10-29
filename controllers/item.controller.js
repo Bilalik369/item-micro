@@ -67,3 +67,20 @@ export const getAllItems = async(req , res)=>{
         return res.status(500).json({msg: "Failed to fetch items"})
     }
 }
+
+export const getItemById = async(req , res)=>{
+    try {
+         const { itemId } = req.params
+
+    const item = await Item.findById(itemId)
+
+    if (!item) {
+      return res.status(404).json({msg : "Item not found"})
+    }
+     await item.incrementViews()
+     return res.status(200).json({item})
+    } catch (error) {
+        console.error("Get item error:", error)
+        return res.status(500).json({msg : "Failed to fetch item"})
+    }
+}
