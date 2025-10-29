@@ -84,3 +84,34 @@ export const getItemById = async(req , res)=>{
         return res.status(500).json({msg : "Failed to fetch item"})
     }
 }
+
+export const getItemsByOwner = async (req, res) => {
+  try {
+    const { ownerId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+
+ 
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    
+    const items = await Item.find({ ownerId })
+      .sort({ createdAt: -1 })
+      .limit(limitNumber)
+      .skip((pageNumber - 1) * limitNumber);
+
+   
+    const count = await Item.countDocuments({ ownerId });
+
+  
+    res.status(200).json({
+      items,
+      totalPages: Math.ceil(count / limitNumber),
+      currentPage: pageNumber,
+      totalItems: count,
+    });
+  } catch (error) {
+    console.error("Get items by owner error:", error);
+    return res.status(500).json({ msg: "Failed to fetch items" });
+  }
+};
