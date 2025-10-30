@@ -10,5 +10,5 @@ router.get("/" , authMiddleware ,getAllItems)
 router.get("/:itemId" , authMiddleware ,getItemById)
 router.get("/owner/:ownerId", authMiddleware ,getItemsByOwner)
 router.put("/:itemId", authMiddleware ,updateItem)
-router.delete("/:id" , authMiddleware ,deleteItem)
+router.delete("/:itemId" , authMiddleware ,deleteItem)
 export default router 
