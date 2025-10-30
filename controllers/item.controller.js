@@ -150,3 +150,30 @@ export const updateItem = async (req, res) => {
     res.status(500).json({ msg: "Failed to update item" })
   }
 }
+
+export const deleteItem = async (req, res) => {
+  try {
+    const { itemId } = req.params
+
+    const item = await Item.findById(itemId)
+    if (!item) {
+      return res.status(404).json({ msg: "Item not found" })
+    }
+
+    
+    if (item.ownerId.toString() !== req.user.userId && req.user.role !== "admin") {
+      return res.status(403).json({ msg: "You are not authorized to delete this item" })
+    }
+
+   
+    await Item.findByIdAndDelete(itemId)
+
+    return res.status(200).json({
+      msg: "Item deleted successfully",
+      item: null,
+    })
+  } catch (error) {
+    console.error("Delete item error:", error)
+    res.status(500).json({ msg: "Failed to delete item" })
+  }
+}
