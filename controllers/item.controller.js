@@ -115,3 +115,38 @@ export const getItemsByOwner = async (req, res) => {
     return res.status(500).json({ msg: "Failed to fetch items" });
   }
 };
+
+
+export const updateItem = async (req, res) => {
+  try {
+    const { itemid } = req.params
+    const updates = req.body
+
+   
+    const item = await Item.findById(itemid)
+    if (!item) {
+      return res.status(404).json({ msg: "Item not found" })
+    }
+
+
+    if (item.ownerId.toString() !== req.user.userId && req.user.role !== "admin") {
+      return res.status(403).json({ msg: "You are not authorized to update this item" })
+    }
+
+    Object.keys(updates).forEach((key) => {
+      if (key !== "ownerId" && key !== "_id") {
+        item[key] = updates[key]
+      }
+    })
+
+    await item.save()
+
+    return res.status(200).json({
+      item,
+      msg: "Item updated successfully",
+    })
+  } catch (error) {
+    console.error("Update item error:", error)
+    res.status(500).json({ msg: "Failed to update item" })
+  }
+}
