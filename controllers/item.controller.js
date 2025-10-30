@@ -177,3 +177,37 @@ export const deleteItem = async (req, res) => {
     res.status(500).json({ msg: "Failed to delete item" })
   }
 }
+
+export const updateAvailability = async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const { availability } = req.body;
+
+    if (!availability) {
+      return res.status(400).json({ msg: "Availability value is required" });
+    }
+
+   
+    const item = await Item.findById(itemId);
+    if (!item) {
+      return res.status(404).json({ msg: "Item not found" });
+    }
+
+    if (item.ownerId.toString() !== req.user.userId && req.user.role !== "admin") {
+      return res.status(403).json({ msg: "You are not authorized to update this item's availability" });
+    }
+
+    
+    item.availability = availability;
+    await item.save();
+
+    return res.status(200).json({
+      msg: "Availability updated successfully",
+      item,
+    });
+  } catch (error) {
+    console.error("Update availability error:", error);
+    return res.status(500).json({ msg: "Failed to update availability" });
+  }
+};
+

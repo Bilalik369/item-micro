@@ -1,5 +1,5 @@
 import express from "express"
-import {createItem, getAllItems ,getItemById,getItemsByOwner, updateItem , deleteItem} from "../controllers/item.controller.js"
+import {createItem, getAllItems ,getItemById,getItemsByOwner, updateItem , deleteItem , updateAvailability} from "../controllers/item.controller.js"
 import {authMiddleware} from "../middleware/auth.middleware.js"
 
 const router = express.Router()
@@ -11,4 +11,5 @@ router.get("/:itemId" , authMiddleware ,getItemById)
 router.get("/owner/:ownerId", authMiddleware ,getItemsByOwner)
 router.put("/:itemId", authMiddleware ,updateItem)
 router.delete("/:itemId" , authMiddleware ,deleteItem)
+router.patch("/:itemId/availability" , authMiddleware ,updateAvailability)
 export default router 
